@@ -10,6 +10,7 @@ var inputs = document.querySelectorAll('input');
 var guessButton = document.querySelector('#guess-button');
 var keyLetters = document.querySelectorAll('span');
 var errorMessage = document.querySelector('#error-message');
+var gameEndMessage = document.querySelector('#game-end-message');
 var viewRulesButton = document.querySelector('#rules-button');
 var viewGameButton = document.querySelector('#play-button');
 var viewStatsButton = document.querySelector('#stats-button');
@@ -26,7 +27,6 @@ window.addEventListener('load', function() {
   let wordsPromise = fetch(`http://localhost:3001/api/v1/words`)
     .then(response => response.json())
     .then(data => {
-      console.log('inside fetch', data)
       words = data;
       setGame()
   })
@@ -41,7 +41,9 @@ for (var i = 0; i < keyLetters.length; i++) {
   keyLetters[i].addEventListener('click', function() { clickLetter(event) });
 }
 
-guessButton.addEventListener('click', submitGuess);
+guessButton.addEventListener('click', function() {
+  submitGuess();
+});
 
 viewRulesButton.addEventListener('click', viewRules);
 
@@ -51,10 +53,10 @@ viewStatsButton.addEventListener('click', viewStats);
 
 // Functions
 function setGame() {
-  console.log('set', words)
-  currentRow = 1;
+  gameEndMessage.innerText = '';
   winningWord = getRandomWord();
   updateInputPermissions();
+  resetKeyLetters();;
 }
 
 function getRandomWord() {
@@ -74,10 +76,19 @@ function updateInputPermissions() {
   inputs[0].focus();
 }
 
+function resetPermissions() {
+  for(var i = 0; i < inputs.length; i++) {
+    inputs[i].value = '';
+    inputs[i].classList = '';
+  }
+
+  inputs[0].focus();
+}
+
 function moveToNextInput(e) {
   var key = e.keyCode || e.charCode;
 
-  if( key !== 8 && key !== 46 ) {
+  if( key !== 8 && key !== 46 && e.target.id !== 'cell-6-29') {
     var indexOfNext = parseInt(e.target.id.split('-')[2]) + 1;
     inputs[indexOfNext].focus();
   }
@@ -101,9 +112,11 @@ function clickLetter(e) {
 function submitGuess() {
   if (checkIsWord()) {
     errorMessage.innerText = '';
+    gameEndMessage.innerText = '';
     compareGuess();
     if (checkForWin()) {
       setTimeout(declareWinner, 1000);
+      currentRow = 1;
     } else {
       changeRow();
     }
@@ -167,20 +180,35 @@ function updateKeyColor(letter, className) {
   keyLetter.classList.add(className);
 }
 
+function resetKeyLetters() {
+  keyLetters.forEach((keyLetter) => {
+    keyLetter.className = '';
+  })
+}
+
 function checkForWin() {
   return guess === winningWord;
 }
 
 function changeRow() {
-  currentRow++;
-  updateInputPermissions();
+  if (currentRow < 6) {
+    currentRow++;
+    updateInputPermissions();
+  } else {
+    gameEndMessage.innerText = 'Sorry! You lost.';
+    currentRow = 1;
+    setTimeout(resetPermissions, 4000);
+    setTimeout(setGame, 4000);
+  }
 }
 
 function declareWinner() {
+  gameEndMessage.innerText = `Congratulations! You won this game of Turdle in ${currentRow} tries!`;
   recordGameStats();
   changeGameOverText();
   viewGameOverMessage();
   setTimeout(startNewGame, 4000);
+  gameEndMessage.innerText = `Congratulations! You won this game of Turdle in ${currentRow} tries!`;
 }
 
 function recordGameStats() {
