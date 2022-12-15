@@ -108,9 +108,7 @@
         </table>
         <div class="inline">
           <button type="button" name="guess" id="guess-button">guess!</button>
-          <!-- This error message changes based on what you enter in table -->
           <p id="error-message"></p>
-          <p id="game-end-message"></p>
         </div>
       </section>
       <section id="rules-section" class="collapsed">
@@ -151,15 +149,18 @@
         <p class="informational-text">The Turdle is solved!</p>
       </section>
       <section class="collapsed" id="stats-section">
-        <!-- No functionality to update game stats at the moment -->
         <h3>GAME STATS</h3>
-        <p class="informational-text">You've played <span id="stats-total-games">/some number/</span> games.</p>
-        <p class="informational-text">You've guessed the correct word <span id="stats-percent-correct">/some number/</span>% of the time.</p>
-        <p class="informational-text">On average, it takes you <span id="stats-average-guesses">/some number/</span> guesses to find the correct word.</p>
+        <p class="informational-text">You've played <span id="stats-total-games">0</span> games.</p>
+        <p class="informational-text">You've guessed the correct word <span id="stats-percent-correct">0</span>% of the time.</p>
+        <p class="informational-text">On average, it takes you <span id="stats-average-guesses">0</span> guesses to find the correct word.</p>
       </section>
-      <section class="collapsed" id="game-over-section">
+      <section class="collapsed" id="game-over-section-win">
         <h3 id="game-over-message">Yay!</h1>
         <p class="informational-text">You did it! It took you <span id="game-over-guesses-count">/some number/</span> guess<span id="game-over-guesses-plural">es</span> to find the correct word.</p>
+      </section>
+      <section class="collapsed" id="game-over-section-loss">
+        <h3 id="game-over-message">Aww :(</h1>
+        <p class="informational-text">You gave it your best and fought hard! The winning word was <span id="correct-guess">/correct word/</span>! You'll get it next time!</p>
       </section>
       <nav>
         <button type="button" name="play" class="nav-button active" id="play-button">play</button>
@@ -167,7 +168,6 @@
         <button type="button" name="rules" class="nav-button" id="stats-button">stats</button>
       </nav>
     </main>
-    <!-- <script src="words.js"></script> -->
     <script src="index.js"></script>
   </body>
 </html>
